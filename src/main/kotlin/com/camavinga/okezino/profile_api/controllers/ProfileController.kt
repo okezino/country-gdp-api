@@ -25,7 +25,7 @@ class ProfileController {
                 .retrieve()
                 .bodyToMono(CatFactResponse::class.java)
                 // timeout after 4 seconds
-                .timeout(Duration.ofSeconds(4))
+                .timeout(Duration.ofSeconds(14))
                 // handle HTTP or network errors gracefully
                 .onErrorResume { ex ->
                     when (ex) {
