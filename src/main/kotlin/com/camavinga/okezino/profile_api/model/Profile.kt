@@ -14,3 +14,9 @@ data class User(
     val name: String,
     val stack: String
 )
+
+
+data class CatFactResponse(
+    val fact: String,
+    val length: Int
+)
