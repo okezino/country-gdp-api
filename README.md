@@ -13,8 +13,8 @@ A production-ready RESTful API built with Go and Gin that returns user profile i
 - ✅ **External API Integration** - Fetches random cat facts from https://catfact.ninja/fact
 - ✅ **Error Handling** - Graceful fallbacks if external API fails
 - ✅ **CORS Support** - Ready for cross-origin requests
-- ✅ **Environment Configuration** - Uses godotenv for easy configuration
-- ✅ **Production Ready** - Deployed on Heroku with proper error handling
+- ✅ **Environment Configuration** - Uses springboot for easy configuration
+- ✅ **Production Ready** - Deployed on railway with proper error handling
 
 - ## 🔧Stack
 - KOTLIN/SPRINGBOOT
