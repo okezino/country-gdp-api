@@ -18,3 +18,30 @@ A production-ready RESTful API built with Go and Gin that returns user profile i
 
 - ## 🔧Stack
 - KOTLIN/SPRINGBOOT
+
+## 🛣️ API Endpoints
+
+### GET /me
+
+Returns your profile with a random cat fact.
+
+**Request:**
+```bash
+curl http://localhost:8080/me
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "user": {
+    "email": "okezi003@gmail.com",
+    "name": "Joseph Okeh Simon",
+    "stack": "Kotlin/SpringBoot"
+  },
+  "timestamp": "2024-10-18T14:37:45Z",
+  "fact": "A cat joke won't hurt."
+}
+```
+
+**Status:** 200 OK
