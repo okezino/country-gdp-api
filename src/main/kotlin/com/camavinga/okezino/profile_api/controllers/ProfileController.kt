@@ -27,15 +27,18 @@ class ProfileController {
     @PostMapping
     fun create(@RequestBody body: CreateStringRequest): ResponseEntity<Any> {
 
-        if (body.value !is String ) {
+
+        if (body.value !is String) {
             return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
-                .body(mapOf("422 Unprocessable Entity" to "Invalid data type for \"value\" (must be string)"))
+                .body(mapOf("422 Unprocessable Entity" to "Invalid data type for 'value' (must be string)"))
         }
-        if ( body.value.isBlank()) {
+
+
+        if (body.value.isBlank()) {
             return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(mapOf("400 Bad Request" to "Invalid request body or missing \"value\" field"))
+                .body(mapOf("400 Bad Request" to "Invalid request body or missing 'value' field"))
         }
         if (storage.containsKey(body.value)) {
             return ResponseEntity
@@ -44,14 +47,22 @@ class ProfileController {
         }
 
         val entity = GetAnalyzedString.analyzeString(body.value)
-        storage[body.value] = entity
+        storage[body.value.lowercase()] = entity
 
-        return ResponseEntity.ok(entity)
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(entity)
+
     }
 
     @GetMapping("/{string_value}")
     fun getOne(@PathVariable string_value: String): ResponseEntity<Any> {
-        val a = storage.values.find { it.value.equals(string_value, ignoreCase = true) }
+        if (string_value.isBlank()) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(mapOf("404 Not Found" to "String does not exist in the system"))
+        }
+
+        val a = storage.values.find { it.value.equals(string_value.lowercase()) }
         return ResponseEntity.ok(a)
     }
 
@@ -63,21 +74,23 @@ class ProfileController {
         @RequestParam(required = false, name = "word_count") wordCount: Int?,
         @RequestParam(required = false, name = "contains_character") containsCharacter: String?
     ): ResponseEntity<Any> {
-        val a = GetFilterList.listWithFilters(isPalindrome = isPalindrome, minLength = minLength, maxLength = maxLength,
-                wordCount = wordCount, containsCharacter = containsCharacter, storage = storage)
+        val a = GetFilterList.listWithFilters(
+            isPalindrome = isPalindrome, minLength = minLength, maxLength = maxLength,
+            wordCount = wordCount, containsCharacter = containsCharacter, storage = storage
+        )
         return ResponseEntity.ok(a)
     }
 
 
     @DeleteMapping("/{string_value}")
     fun deleteOne(@PathVariable string_value: String): ResponseEntity<Any> {
-        val a = storage.values.find { it.value.equals(string_value, ignoreCase = true) }
+
         if (!storage.containsKey(string_value)) {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(mapOf("404 Not Found" to "String does not exist in the system"))
         }
-        storage.remove(string_value)
+        storage.remove(string_value.lowercase())
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT).body(null)
     }
