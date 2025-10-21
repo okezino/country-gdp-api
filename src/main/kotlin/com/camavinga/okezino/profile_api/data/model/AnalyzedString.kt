@@ -18,3 +18,10 @@ data class StringProperties(
     val sha256_hash: String,
     val character_frequency_map: Map<Char, Int>
 )
+
+//GET
+data class PagedAnalyzedStringsResponse(
+    val data: List<AnalyzedString>,
+    val count: Int,
+    val filters_applied: Map<String, Any?>
+)

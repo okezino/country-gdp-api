@@ -56,4 +56,4 @@ data class NLFilterResponse(
     val interpreted_query: NLFilterInterpretation
 )
 
-data class CreateStringRequest(val value: String)
+data class CreateStringRequest(val value: Any)
