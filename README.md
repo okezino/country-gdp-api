@@ -32,27 +32,6 @@ Storage: In-memory (ConcurrentHashMap)
 
 Build Tool: Gradle
 
-🧩 Project Structure
-src/
-├─ main/
-│   ├─ kotlin/
-│   │   └─ com.example.stringanalyzer/
-│   │        ├─ controller/
-│   │        │   └─ ProfileController.kt
-│   │        ├─ model/
-│   │        │   ├─ AnalyzedString.kt
-│   │        │   ├─ CreateStringRequest.kt
-│   │        │   ├─ Profile.kt
-│   │        │   ├─ User.kt
-│   │        │   └─ CatFactResponse.kt
-│   │        ├─ service/
-│   │        │   ├─ GetAnalyzedString.kt
-│   │        │   └─ GetFilterList.kt
-│   │        └─ StringAnalyzerApplication.kt
-│   └─ resources/
-│       └─ application.yml
-└─ test/
-
 ⚡️ Endpoints
 1️⃣ Create / Analyze String
 
