@@ -1,8 +1,8 @@
 package com.camavinga.okezino.profile_api.currency.controller
 
-import CountryOutput
 import com.camavinga.okezino.profile_api.currency.data.CodeResult
 import com.camavinga.okezino.profile_api.currency.data.CountryItem
+import com.camavinga.okezino.profile_api.currency.data.CountryOutput
 import com.camavinga.okezino.profile_api.currency.data.Rates
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -19,10 +19,25 @@ import kotlin.random.Random
 
 @RestController
 @RequestMapping("/countries")
-class CountryController {
+class CountryController(
+    private val service: CountryService
+) {
 
     private val countriesClient = WebClient.create("https://restcountries.com")
     private val ratesClient = WebClient.create("https://open.er-api.com")
+
+    var listCountries = mutableListOf<CountryOutput>()
+
+    fun getRateByCode(rates: Rates, code: String?): Double? {
+        return try {
+            val property = Rates::class.members
+                .firstOrNull { it.name.equals(code, ignoreCase = true) }
+            property?.call(rates) as? Double
+        } catch (e: Exception) {
+            null
+        }
+    }
+
 
     fun getFuck() {
 
@@ -37,25 +52,20 @@ class CountryController {
             .retrieve()
             .bodyToMono(CodeResult::class.java)
 
-         Mono.zip(countriesMono, ratesMono)
+        Mono.zip(countriesMono, ratesMono)
             .map { tuple ->
                 val countries = tuple.t1
                 val exchangeRates = tuple.t2.rates
 
-                countries.mapIndexed { index, country ->
-                    val currencyCode = country.currencies.firstOrNull()?.code ?: "USD"
 
-                    // reflectively get the rate value from Rates class
-                    val exchangeRate = try {
-                        val rateField = Rates::class.java.getDeclaredField(currencyCode)
-                        rateField.getDouble(exchangeRates)
-                    } catch (e: Exception) {
-                        1.0
-                    }
+                countries.mapIndexed { index, country ->
+                    val currencyCode = country.currencies?.firstOrNull()?.code
+                    val exchangedRate = getRateByCode(exchangeRates, currencyCode)
 
                     val randomFactor = Random.nextDouble(1000.0, 2000.0)
-                    val estimatedGdp = country.population * randomFactor / exchangeRate
-
+                    val estimatedGdp: Double = exchangedRate?.let {
+                        country.population * randomFactor / it
+                    } ?: 0.0
                     CountryOutput(
                         id = index + 1,
                         name = country.name,
@@ -63,15 +73,22 @@ class CountryController {
                         region = country.region,
                         population = country.population.toLong(),
                         currency_code = currencyCode,
-                        exchange_rate = String.format("%.2f", exchangeRate).toDouble(),
-                        estimated_gdp = String.format("%.2f", estimatedGdp).toDouble(),
+                        exchange_rate = getRateByCode(exchangeRates, currencyCode),
+                        estimated_gdp = estimatedGdp,
                         flag_url = country.flag,
                         last_refreshed_at = Instant.now().toString()
                     )
+
+
                 }
             }.subscribe { countryOutputs ->
                 // Here you can save countryOutputs to your database
                 countryOutputs.forEach { println(it) }
+                listCountries = countryOutputs.toMutableList()
+
+                service.addAllCountries(countryOutputs)
+
+
             }
     }
 
@@ -82,24 +99,30 @@ class CountryController {
 
     @PostMapping("/refresh")
     fun refreshCountries(): ResponseEntity<Any> {
+        getFuck()
         return ResponseEntity.ok().build()
-
     }
 
     @GetMapping()
     fun getCountries(
         @RequestParam(required = false, value = "region") region: String?,
         @RequestParam(required = false, value = "currency") currency: String?,
-        @RequestParam(required = false, value = "sort") name: String?
+        @RequestParam(required = false, value = "sort") sort: String?
     ): ResponseEntity<Any> {
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok(
+            service.getCountriesFilteredAndSorted(
+                sort = sort,
+                region = region,
+                currency = currency
+            )
+        )
     }
 
     @GetMapping("/:{string_value}")
     fun getCountry(
         @PathVariable string_value: String
     ): ResponseEntity<Any> {
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok(service.getCountryByName(name = string_value))
 
     }
 
@@ -113,6 +136,7 @@ class CountryController {
 
     @DeleteMapping(":{string_value}")
     fun deleteCountries(@PathVariable string_value: String): ResponseEntity<Any> {
+        service.deleteCountry(name = string_value)
         return ResponseEntity.ok().build()
     }
 }
