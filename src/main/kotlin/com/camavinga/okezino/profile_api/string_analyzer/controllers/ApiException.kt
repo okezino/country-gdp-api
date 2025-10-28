@@ -1,4 +1,4 @@
-package com.camavinga.okezino.profile_api.controllers
+package com.camavinga.okezino.profile_api.string_analyzer.controllers
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

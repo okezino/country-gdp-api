@@ -1,4 +1,4 @@
-package com.camavinga.okezino.profile_api.model
+package com.camavinga.okezino.profile_api.string_analyzer.model
 
 import java.time.LocalDateTime
 

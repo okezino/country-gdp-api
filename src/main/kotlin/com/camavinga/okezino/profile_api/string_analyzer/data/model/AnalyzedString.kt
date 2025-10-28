@@ -1,7 +1,6 @@
-package com.camavinga.okezino.profile_api.data.model
+package com.camavinga.okezino.profile_api.string_analyzer.data.model
 
 import java.time.Instant
-import java.time.LocalDateTime
 
 data class AnalyzedString(
     val id: String,

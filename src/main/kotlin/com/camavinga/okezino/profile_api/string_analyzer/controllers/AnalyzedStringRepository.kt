@@ -1,6 +1,6 @@
-package com.camavinga.okezino.profile_api.controllers
+package com.camavinga.okezino.profile_api.string_analyzer.controllers
 
-import com.camavinga.okezino.profile_api.data.model.AnalyzedString
+import com.camavinga.okezino.profile_api.string_analyzer.data.model.AnalyzedString
 import org.springframework.stereotype.Repository
 import java.util.concurrent.ConcurrentHashMap
 

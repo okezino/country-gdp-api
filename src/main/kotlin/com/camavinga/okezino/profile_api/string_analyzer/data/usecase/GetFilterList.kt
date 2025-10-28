@@ -1,7 +1,7 @@
-package com.camavinga.okezino.profile_api.data.usecase
+package com.camavinga.okezino.profile_api.string_analyzer.data.usecase
 
-import com.camavinga.okezino.profile_api.data.model.AnalyzedString
-import com.camavinga.okezino.profile_api.data.model.PagedAnalyzedStringsResponse
+import com.camavinga.okezino.profile_api.string_analyzer.data.model.AnalyzedString
+import com.camavinga.okezino.profile_api.string_analyzer.data.model.PagedAnalyzedStringsResponse
 import java.util.concurrent.ConcurrentHashMap
 
 object GetFilterList {

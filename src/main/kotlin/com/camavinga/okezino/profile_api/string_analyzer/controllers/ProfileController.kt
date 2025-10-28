@@ -1,9 +1,9 @@
-package com.camavinga.okezino.profile_api.controllers
+package com.camavinga.okezino.profile_api.string_analyzer.controllers
 
-import com.camavinga.okezino.profile_api.data.model.AnalyzedString
-import com.camavinga.okezino.profile_api.data.usecase.GetAnalyzedString
-import com.camavinga.okezino.profile_api.data.usecase.GetFilterList
-import com.camavinga.okezino.profile_api.model.CreateStringRequest
+import com.camavinga.okezino.profile_api.string_analyzer.data.model.AnalyzedString
+import com.camavinga.okezino.profile_api.string_analyzer.data.usecase.GetAnalyzedString
+import com.camavinga.okezino.profile_api.string_analyzer.data.usecase.GetFilterList
+import com.camavinga.okezino.profile_api.string_analyzer.model.CreateStringRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping

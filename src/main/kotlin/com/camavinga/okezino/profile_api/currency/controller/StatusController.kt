@@ -1,0 +1,15 @@
+package com.camavinga.okezino.profile_api.currency.controller
+
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/status")
+class StatusController {
+
+    @GetMapping
+    fun getStatus(): String {
+        return "Profile API is running"
+    }
+}
