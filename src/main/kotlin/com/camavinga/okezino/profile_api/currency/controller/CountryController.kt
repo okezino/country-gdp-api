@@ -4,6 +4,7 @@ import com.camavinga.okezino.profile_api.currency.data.CodeResult
 import com.camavinga.okezino.profile_api.currency.data.CountryItem
 import com.camavinga.okezino.profile_api.currency.data.CountryOutput
 import com.camavinga.okezino.profile_api.currency.data.Rates
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.time.Instant
 import kotlin.random.Random
 
@@ -26,7 +29,6 @@ class CountryController(
     private val countriesClient = WebClient.create("https://restcountries.com")
     private val ratesClient = WebClient.create("https://open.er-api.com")
 
-    var listCountries = mutableListOf<CountryOutput>()
 
     fun getRateByCode(rates: Rates, code: String?): Double? {
         return try {
@@ -39,7 +41,7 @@ class CountryController(
     }
 
 
-    fun getFuck() {
+    fun getData() {
 
         val countriesMono = countriesClient.get()
             .uri("/v2/all?fields=name,capital,region,population,flag,currencies")
@@ -83,23 +85,21 @@ class CountryController(
                 }
             }.subscribe { countryOutputs ->
                 // Here you can save countryOutputs to your database
-                countryOutputs.forEach { println(it) }
-                listCountries = countryOutputs.toMutableList()
+//                countryOutputs.forEach { println(it) }
 
                 service.addAllCountries(countryOutputs)
-
 
             }
     }
 
     init {
-        getFuck()
+        getData()
     }
 
 
     @PostMapping("/refresh")
     fun refreshCountries(): ResponseEntity<Any> {
-        getFuck()
+        getData()
         return ResponseEntity.ok().build()
     }
 
@@ -118,25 +118,31 @@ class CountryController(
         )
     }
 
-    @GetMapping("/:{string_value}")
+    @GetMapping("/{string_value}")
     fun getCountry(
         @PathVariable string_value: String
     ): ResponseEntity<Any> {
-        return ResponseEntity.ok(service.getCountryByName(name = string_value))
+        return service.getCountryByName(name = string_value)
 
     }
 
     @GetMapping("/image")
-    fun getCountryImage(
-        @PathVariable string_value: String
-    ): ResponseEntity<Any> {
-        return ResponseEntity.ok().build()
+    fun getCountryImage(): ResponseEntity<Any> {
+        val imagePath = Paths.get("cache", "summary.png")
+        if (!Files.exists(imagePath)) {
+            return ResponseEntity.status(404).body(mapOf("error" to "Summary image not found"))
+        }
+
+        val bytes = Files.readAllBytes(imagePath)
+        return ResponseEntity.ok()
+            .contentType(MediaType.IMAGE_PNG)
+            .body(bytes)
 
     }
 
-    @DeleteMapping(":{string_value}")
+    @DeleteMapping("{string_value}")
     fun deleteCountries(@PathVariable string_value: String): ResponseEntity<Any> {
-        service.deleteCountry(name = string_value)
-        return ResponseEntity.ok().build()
+
+        return   service.deleteCountry(name = string_value)
     }
 }
