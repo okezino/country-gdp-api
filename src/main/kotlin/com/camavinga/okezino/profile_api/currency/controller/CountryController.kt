@@ -96,7 +96,7 @@ class CountryController(
     @PostMapping("/refresh")
     fun refreshCountries(): ResponseEntity<Any> {
         getData()
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok("Country refresh successfully")
     }
 
     @GetMapping()
@@ -134,7 +134,7 @@ class CountryController(
 
     }
 
-    @DeleteMapping("{string_value}")
+    @DeleteMapping("/{string_value}")
     fun deleteCountries(@PathVariable string_value: String): ResponseEntity<Any> {
 
         return service.deleteCountry(name = string_value)
