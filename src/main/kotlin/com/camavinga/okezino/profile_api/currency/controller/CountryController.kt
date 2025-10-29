@@ -105,12 +105,10 @@ class CountryController(
         @RequestParam(required = false, value = "currency") currency: String?,
         @RequestParam(required = false, value = "sort") sort: String?
     ): ResponseEntity<Any> {
-        return ResponseEntity.ok(
-            service.getCountriesFilteredAndSorted(
-                sort = sort,
-                region = region,
-                currency = currency
-            )
+        return service.getCountriesFilteredAndSorted(
+            sort = sort,
+            region = region,
+            currency = currency
         )
     }
 
@@ -139,6 +137,6 @@ class CountryController(
     @DeleteMapping("{string_value}")
     fun deleteCountries(@PathVariable string_value: String): ResponseEntity<Any> {
 
-        return   service.deleteCountry(name = string_value)
+        return service.deleteCountry(name = string_value)
     }
 }
