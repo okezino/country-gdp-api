@@ -92,10 +92,6 @@ class CountryController(
             }
     }
 
-    init {
-        getData()
-    }
-
 
     @PostMapping("/refresh")
     fun refreshCountries(): ResponseEntity<Any> {
